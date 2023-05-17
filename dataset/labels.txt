@@ -1,0 +1,30 @@
+R: Recipient
+S: Supplier
+I: Invoice
+
+1: R_Name
+2: R_Street
+3: R_HouseNumber
+4: R_ZIP
+5: R_City
+6: R_Country
+7: R_VAT
+
+8: S_Name
+9: S_Street
+10: S_HouseNumber
+11: S_ZIP
+12: S_City
+13: S_Country
+14: S_VAT
+15: S_Bank
+16: S_BIC
+17: S_IBAN
+18: S_Tel
+19: S_Email
+
+20: I_Number
+21: I_Date
+22: I_DueDate
+23: I_Amount
+24: I_Currency
