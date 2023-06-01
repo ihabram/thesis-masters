@@ -3,10 +3,10 @@ import random
 
 class FakeData():
     def __init__(self) -> None:
-        self.locations = ['de_DE', 'de_AT', 'de_CH', 'en_GB', 'en_US', 'fr_FR', 'es_ES', 'pt_PT', 'it_IT', 'pl_PL']
+        self.locations     = ['de_DE', 'de_AT', 'de_CH', 'en_GB', 'en_US', 'fr_FR', 'es_ES', 'pt_PT', 'it_IT', 'pl_PL']
         self.country_codes = ['DE', 'AT', 'CH', 'GB', 'US', 'FR', 'ES', 'PT', 'IT', 'PL']
-        self.currencies = ['EUR', 'EUR', 'CHF', 'GBP', 'USD', 'EUR', 'EUR', 'EUR', 'EUR', 'PLN']
-        self.weights = [0.3, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05]
+        self.currencies    = ['EUR', 'EUR', 'CHF', 'GBP', 'USD', 'EUR', 'EUR', 'EUR', 'EUR', 'PLN']
+        self.weights       = [0.3, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05]
         
         banks_de = [
             "Deutsche Bank",
@@ -128,8 +128,7 @@ class FakeData():
             "Alior Bank",
             "Idea Bank"
         ]
-        self.banks = [banks_de, banks_at, banks_ch, banks_gb, banks_us, 
-                      banks_fr, banks_es, banks_pt, banks_it, banks_pl]
+        self.banks = [banks_de, banks_at, banks_ch, banks_gb, banks_us, banks_fr, banks_es, banks_pt, banks_it, banks_pl]
     
     def _get_bank_name(self, code): 
         i = self.country_codes.index(code)
@@ -153,7 +152,7 @@ class FakeData():
     def _get_start_date(self):
         '''
             Start year between 2015 and 2023
-            Always start on the first day of the month
+            Always start on the first day of the month + never start in December
         '''
         years = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
         months= ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11']
@@ -187,11 +186,7 @@ class FakeData():
 
         return dd + '.' + mm + '.' + yyyy
 
-class Agder_Energi(FakeData):
-    def __init__(self) -> None:
-        super().__init__()
-
-    def get_fake_data(self, num_invoices, det):
+    def __call__(self, num_invoices, det):
         if det is True:
             seeds = list(range(4320, 4320 + num_invoices))
         
