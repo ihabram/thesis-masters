@@ -1,3 +1,5 @@
+from PIL import ImageDraw, ImageFont
+
 def text_label(draw, coords, text, font, anchor, label, stroke=0):
     '''
     Draws text on a document, returns 'Its bounding box
@@ -70,9 +72,15 @@ def text_label(draw, coords, text, font, anchor, label, stroke=0):
 
     return text_labels
 
-from PIL import Image, ImageDraw, ImageFont
 
 def label_visualizer(image, labels):
+    '''
+    This function visualizes the labels on a given invoice.
+    Every label has a unique color, the individual words within an entity are marked with gray color.
+    Args:
+        image: PIL image
+        labels: list of labels
+    '''
     # Define label - color relationship
     label2color = {
         'R_Name':           'lightcoral',

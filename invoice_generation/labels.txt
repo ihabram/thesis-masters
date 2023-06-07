@@ -30,3 +30,5 @@ I: Invoice
 22: I_DueDate
 23: I_Amount
 24: I_Currency
+
+25: Other
