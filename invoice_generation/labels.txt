@@ -1,3 +1,5 @@
+List of entities which are used in the generated dataset.
+
 R: Recipient
 S: Supplier
 I: Invoice

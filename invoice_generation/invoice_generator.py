@@ -2,6 +2,23 @@ from PIL import Image, ImageDraw, ImageFont
 from annotator import text_label
 import random
 
+class LayoutManager():
+    def __init__(self) -> None:
+        pass
+
+    def __call__(self):
+        layout = {
+            'R_field': [100, 100, 600, 500],    # Recipient
+            'S_field': [900, 350, 1538, 850],   # Supplier
+            'L_field': [1000, 50, 1538, 200],   # Logo
+            'T_field': [100, 1000, 1538, 1600], # Table
+            'I_field': [100, 2000, 1538, 2200], # Information
+            'Q_field': [550, 550, 800, 800],    # QR code
+            'X_field': [100, 1650, 1538, 1900]  # Text field
+        }
+
+        return layout
+
 class Draw_Table():
     '''
     This class is used to print tables on invoices
@@ -42,16 +59,16 @@ class Draw_Table():
             'Garbage can'
         ]
 
-    def __call__(self, drawer, bbox, currency):
-        self.draw = ImageDraw.Draw(drawer)
+    def __call__(self, labels, draw, bbox, currency):
+        self.draw = ImageDraw.Draw(draw)
         self.bbox = bbox                            # Bounding box of the table [x1, y1, x2, y2]
-        self.currency = currency                    # CUrrency to use in the table
+        self.currency = currency                    # Currency to use in the table
         self.font = ImageFont.truetype("arial.ttf", 30)
         self.num_items = random.randint(3, 10)      # How many rows does the table have (number of items)
         self.num_cols = random.randint(2, 5)        # How many columns does the table have
         self.increment = 50                         # Height of a row in pixels
         self.margin = 12                            # Distance between the table lines and text
-        self.labels = []                            # Store the labels of the words
+        self.labels = labels                        # Store the labels of the words
 
         self.draw_horizontal_lines()
         self.draw_vertical_lines()
@@ -122,14 +139,14 @@ class Draw_Table():
         positions = self.get_x_positions()
         
         # Print the first column header (description) to the left
-        self.draw.text((positions[0] + self.margin, self.bbox[1]), self.column_names[0], fill='black', font=self.font, anchor='lm', stroke_width=1)
-
+        self.labels.append(text_label(self.draw, (positions[0] + self.margin, self.bbox[1]), self.column_names[0], self.font, anchor='lm', label='Other', stroke=1))
         # Print the rest of the columns to the right
         for col in range(self.num_cols - 2):
-            self.draw.text((positions[col+2] - self.margin, self.bbox[1]), self.column_names[col+1], fill='black', font=self.font, anchor='rm', stroke_width=1)
+            self.labels.append(text_label(self.draw, (positions[col+2] - self.margin, self.bbox[1]), self.column_names[col+1], self.font, anchor='rm', label='Other', stroke=1))
 
         # Print the last column header (brutto) to the right
-        self.draw.text((positions[-1] - self.margin, self.bbox[1]), self.column_names[-1], fill='black', font=self.font, anchor='rm', stroke_width=1)
+        #self.draw.text((positions[-1] - self.margin, self.bbox[1]), self.column_names[-1], fill='black', font=self.font, anchor='rm', stroke_width=1)
+        self.labels.append(text_label(self.draw, (positions[-1] - self.margin, self.bbox[1]), self.column_names[-1], self.font, anchor='rm', label='Other', stroke=1))
 
     def draw_content(self):
         '''
@@ -153,10 +170,17 @@ class Draw_Table():
 
         # Print the data into the table
         for row in range(self.num_items -1):
-            for col in range(self.num_cols -1):
-                self.draw.text((positions[col +1] - self.margin, self.bbox[1]+row*self.increment+self.increment+self.margin), str(data[col][row]), fill='black', font=self.font, anchor='rt')
-            # Print the brutto separately (currency has to be added)
-            self.draw.text((positions[-1] - self.margin, self.bbox[1]+row*self.increment+self.increment+self.margin), str(data[-1][row])+' '+self.currency, fill='black', font=self.font, anchor='rt')
+            # Print the description separately (aligned to the left)
+            self.labels.append(text_label(self.draw, (positions[0] + self.margin, self.bbox[1]+row*self.increment+self.increment+2*self.margin), str(data[0][row]), font=self.font, anchor='lm', label='Other'))
+            for col in range(self.num_cols -2):
+                self.labels.append(text_label(self.draw, (positions[col +2] - self.margin, self.bbox[1]+row*self.increment+self.increment+2*self.margin), str(data[col+1][row]), font=self.font, anchor='rm', label='Other'))
+            # Print the brutto separately (currency has different label)
+            # Print the currency
+            self.labels.append(text_label(self.draw, (positions[-1] - self.margin, self.bbox[1]+row*self.increment+self.increment+2*self.margin), self.currency, font=self.font, anchor='rm', label='I_Currency'))
+            # Print the brutto amount (shift by the width of the currency)
+            space_bbox = self.draw.textbbox((0, 0), ' ' + self.currency, font=self.font)
+            space_width = space_bbox[2] - space_bbox[0]
+            self.labels.append(text_label(self.draw, (positions[-1] - self.margin - space_width, self.bbox[1]+row*self.increment+self.increment+2*self.margin), str(data[-1][row]), font=self.font, anchor='rm', label='Other'))
 
         # Print the sum field
         summa = sum(bruttos)
@@ -164,7 +188,13 @@ class Draw_Table():
         self.draw_sum_field(str(summa))
 
     def draw_sum_field(self, summa):
-        x = self.bbox[2] - self.margin
-        self.draw.text((x, self.bbox[1] + self.increment*self.num_items + self.margin), summa + ' ' + self.currency, fill='black', font=self.font, anchor='rt')
-        text_width, text_height = self.draw.textsize(summa + ' ' + self.currency, font=self.font)
-        self.draw.text((x - text_width - 8, self.bbox[1] + self.increment*self.num_items + self.margin), 'Sum: ', fill='black', font=self.font, anchor='rt', stroke_width=1)
+        # Print the currency
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin, self.bbox[1] + self.increment*self.num_items + self.margin*2), self.currency, self.font, 'rm', 'I_Currency'))
+        # Print the sum amount
+        space_bbox = self.draw.textbbox((0, 0), ' ' + self.currency, font=self.font)
+        space_width = space_bbox[2] - space_bbox[0]
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*2), summa, self.font, 'rm', 'I_Amount'))
+        # Print the 'Sum' word
+        space_bbox = self.draw.textbbox((0, 0), '  '+self.currency+summa, font=self.font)
+        space_width = space_bbox[2] - space_bbox[0]
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*2), 'Sum:', self.font, 'rm', 'Other', stroke=1))

@@ -1,5 +1,5 @@
 
-def text_label(draw, coords, text, font, anchor, label):
+def text_label(draw, coords, text, font, anchor, label, stroke=0):
     '''
     Draws text on a document, returns its bounding box
     Whole text-level bounding box + word-level bounding boxes are obtained
@@ -44,7 +44,7 @@ def text_label(draw, coords, text, font, anchor, label):
     words = text.split()
     for word in words:
         # Draw the word
-        draw.text([x1, y1], word, fill='black', font=font, anchor=anchor)
+        draw.text([x1, y1], word, fill='black', font=font, anchor=anchor, stroke_width=stroke)
 
         # Width of the word
         word_bbox = draw.textbbox([x1, y1], word, font=font, anchor=anchor)
