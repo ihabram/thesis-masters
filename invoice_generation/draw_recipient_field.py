@@ -10,7 +10,6 @@ class DrawRecipientField():
         self.font = font
         self.bbox = bbox
         self.data = data
-        self.entities = self.select_entities()
 
         letter_bbox = self.draw.textbbox((0, 0), 'A', font=self.font)
         self.increment = (letter_bbox[3] - letter_bbox[1])+20    # The distance between the rows
@@ -19,36 +18,36 @@ class DrawRecipientField():
         self.draw_content()
 
         return self.labels
-
-    def select_entities(self):
-        # TODO: Make this function random
-        entities = ['R_Name', 'R_Street', 'R_HouseNumber', 'R_ZIP', 'R_City', 'R_Country', 'R_VAT']
-        return entities
+    
+    def get_textwidth(self, text):
+        '''
+        Returns the width in pixels of a given text.
+        Useful when a specific text is inserted in front of an entity and the entity should be shifted
+        '''
+        bbox = self.draw.textbbox((0, 0), text, font=self.font)
+        width = bbox[2] - bbox[0]
+        return width
     
     def draw_content(self):
-        x1, y1, x2, y2 = self.bbox
+        entities = ['R_Name', 'R_Street', 'R_ZIP', 'R_Country', 'R_VAT']
+        x, y, x2, y2 = self.bbox
         
-        for entity in self.entities:
+        for entity in entities:
             # Street - house number, ZIP - City are always show up next to each other
             if entity == 'R_Street':
-                self.labels.append(text_label(self.draw, (x1, y1), self.data[entity], self.font, 'lm', entity))
-                bbox = self.draw.textbbox((0, 0), self.data[entity], font=self.font)
-                width = bbox[2] - bbox[0]
-                self.labels.append(text_label(self.draw, (x1 + width + 30, y1), self.data['R_HouseNumber'], self.font, 'lm', 'R_HouseNumber'))
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
+                width = self.get_textwidth(self.data[entity])
+                self.labels.append(text_label(self.draw, (x + width + 30, y), self.data['R_HouseNumber'], self.font, 'lm', 'R_HouseNumber'))
             if entity == 'R_ZIP':
-                self.labels.append(text_label(self.draw, (x1, y1), self.data[entity], self.font, 'lm', entity))
-                bbox = self.draw.textbbox((0, 0), self.data[entity], font=self.font)
-                width = bbox[2] - bbox[0]
-                self.labels.append(text_label(self.draw, (x1 + width + 30, y1), self.data['R_City'], self.font, 'lm', 'R_City'))
-            if entity in ['R_HouseNumber', 'R_City']:
-                continue
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
+                width = self.get_textwidth(self.data[entity])
+                self.labels.append(text_label(self.draw, (x + width + 30, y), self.data['R_City'], self.font, 'lm', 'R_City'))
             if entity == 'R_VAT':
-                y1 += 1.5*self.increment
-                self.labels.append(text_label(self.draw, (x1, y1), 'Tax ID: \t', self.font, 'lm', 'Other'))
-                bbox = self.draw.textbbox((0, 0), 'Tax ID: \t', font=self.font)
-                width = bbox[2] - bbox[0]
-                self.labels.append(text_label(self.draw, (x1+width, y1), self.data[entity], self.font, 'lm', entity))
+                y += 1.5*self.increment
+                self.labels.append(text_label(self.draw, (x, y), 'Tax ID:', self.font, 'lm', 'Other'))
+                width = self.get_textwidth('Tax ID: \t')
+                self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
 
             else:
-                self.labels.append(text_label(self.draw, (x1, y1), self.data[entity], self.font, 'lm', entity))
-                y1 += self.increment
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
+                y += self.increment
