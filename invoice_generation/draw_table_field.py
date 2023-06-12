@@ -15,10 +15,10 @@ class LayoutManager():
             'S_field': [900, 250, 1538, 650],   # Supplier
             'D_field': [900, 700, 1538, 950],   # Date (and contact)
             'L_field': [1200, 30, 1538, 200],   # Logo
-            'T_field': [100, 1100, 1538, 1800], # Table
-            'I_field': [100, 2050, 1538, 2250], # Information
+            'T_field': [100, 1100, 1538, 1750], # Table
+            'I_field': [100, 2100, 1538, 2250], # Information
             'Q_field': [350, 700, 700, 1000],   # QR code
-            'X_field': [100, 1850, 1538, 2000]  # Text field
+            'X_field': [100, 1800, 1538, 2000]  # Text field
         }
 
         return layout

@@ -4,7 +4,7 @@ from draw_table_field import LayoutManager, Draw_Table
 from draw_recipient_field import DrawRecipientField
 from draw_supplier_field import DrawSupplierField, DrawDateField
 from draw_graphicals import DrawBarcodeField, DrawLogoField
-from draw_information_field import DrawInformationField
+from draw_information_field import DrawInformationField, DrawTextField
 import json
 
 class InvoiceGenerator():
@@ -39,6 +39,7 @@ class InvoiceGenerator():
         logo_drawer = DrawLogoField()
         date_drawer = DrawDateField()
         info_drawer = DrawInformationField()
+        text_drawer = DrawTextField()
 
         # 4. Draw the fake data on the image
         for i, document in enumerate(fake_data):
@@ -60,6 +61,8 @@ class InvoiceGenerator():
             labels = date_drawer(labels, drawer, self.font, self.layout['D_field'], fake_data[i])
             # 4.7 Draw information field
             labels = info_drawer(labels, drawer, self.font, self.layout['I_field'], fake_data[i])
+            # 4.8 Draw text field
+            labels = text_drawer(labels, drawer, self.font, self.layout['X_field'], fake_data[i])
 
             # 5. Save the labels
             with open(self.output_dir+'/Annotations/'+str(i)+'.json', 'w') as fp:
