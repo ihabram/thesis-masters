@@ -11,13 +11,14 @@ class LayoutManager():
 
     def get_layout(self):
         layout = {
-            'R_field': [100, 100, 600, 500],    # Recipient
-            'S_field': [900, 350, 1538, 850],   # Supplier
-            'L_field': [1000, 50, 1538, 200],   # Logo
-            'T_field': [100, 1000, 1538, 1600], # Table
+            'R_field': [100, 350, 600, 800],    # Recipient
+            'S_field': [900, 250, 1538, 650],   # Supplier
+            'D_field': [900, 700, 1538, 950],   # Date (and contact)
+            'L_field': [1200, 30, 1538, 200],   # Logo
+            'T_field': [100, 1100, 1538, 1800], # Table
             'I_field': [100, 2000, 1538, 2200], # Information
-            'Q_field': [550, 550, 800, 800],    # QR code
-            'X_field': [100, 1650, 1538, 1900]  # Text field
+            'Q_field': [350, 850, 700, 1000],   # QR code
+            'X_field': [100, 1850, 1538, 2000]  # Text field
         }
 
         return layout

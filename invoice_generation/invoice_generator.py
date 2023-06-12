@@ -2,7 +2,7 @@ from fakedata import FakeData
 from PIL import Image, ImageDraw, ImageFont
 from draw_table_field import LayoutManager, Draw_Table
 from draw_recipient_field import DrawRecipientField
-from draw_supplier_field import DrawSupplierField
+from draw_supplier_field import DrawSupplierField, DrawInformationField
 from draw_graphicals import DrawBarcodeField, DrawLogoField
 import json
 
@@ -20,7 +20,7 @@ class InvoiceGenerator():
         # 1. Generate the layout
         layout_manager = LayoutManager()
         self.layout = layout_manager.get_layout()
-        # layout_manager.visualize_layout(self.layout, self.drawer, self.font, self.canvas)
+        layout_manager.visualize_layout(self.layout, self.drawer, self.font, self.canvas)
 
         # 2. Generate the fake data
         fake_data_generator = FakeData()
@@ -32,6 +32,7 @@ class InvoiceGenerator():
         supplier_drawer = DrawSupplierField()
         barcode_drawer = DrawBarcodeField()
         logo_drawer = DrawLogoField()
+        info_drawer = DrawInformationField()
         for i, document in enumerate(fake_data):
             # Draw the table on the document
             self.labels = table_drawer(self.labels, self.canvas, self.layout['T_field'], document['I_Currency'])
@@ -43,6 +44,8 @@ class InvoiceGenerator():
             barcode_drawer(self.canvas, self.layout['Q_field'])
             # Draw logo field
             logo_drawer(self.canvas, self.layout['L_field'])
+            # Draw information field
+            self.labels.append(info_drawer(self.labels, self.drawer, self.font, self.layout['D_field'], fake_data[i]))
 
             # Save the labels
             with open(self.output_dir+'/Annotations/'+str(i)+'.json', 'w') as fp:

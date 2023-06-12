@@ -227,11 +227,11 @@ class FakeData():
             fake_doc['I_Currency']  = self._get_currency(fake.current_country_code())
             fake_doc['Fax']         = fake.phone_number()
             fake_doc['Website']     = self._get_email(fake_doc['S_Name'], fake.current_country_code())
-            fake_doc['Contact_name']= fake.name()
-            fake_doc['Start_date']  = self._get_start_date()
-            fake_doc['End_date']    = self._get_end_date(fake_doc['Start_date'])
-            fake_doc['I_Date']      = fake_doc['End_date']
-            fake_doc['I_DueDate']   = self._get_due_date(fake_doc['Start_date'])
+            fake_doc['Contact_Name']= fake.name()
+            fake_doc['Start_Date']  = self._get_start_date()
+            fake_doc['End_Date']    = self._get_end_date(fake_doc['Start_Date'])
+            fake_doc['I_Date']      = fake_doc['End_Date']
+            fake_doc['I_DueDate']   = self._get_due_date(fake_doc['Start_Date'])
 
             fake_data.append(fake_doc)
         
