@@ -40,6 +40,13 @@ class DrawRecipientField():
                 self.labels.append(text_label(self.draw, (x1 + width + 30, y1), self.data['R_City'], self.font, 'lm', 'R_City'))
             if entity in ['R_HouseNumber', 'R_City']:
                 continue
+            if entity == 'R_VAT':
+                y1 += 1.5*self.increment
+                self.labels.append(text_label(self.draw, (x1, y1), 'Tax ID: \t', self.font, 'lm', 'Other'))
+                bbox = self.draw.textbbox((0, 0), 'Tax ID: \t', font=self.font)
+                width = bbox[2] - bbox[0]
+                self.labels.append(text_label(self.draw, (x1+width, y1), self.data[entity], self.font, 'lm', entity))
+
             else:
                 self.labels.append(text_label(self.draw, (x1, y1), self.data[entity], self.font, 'lm', entity))
                 y1 += self.increment
