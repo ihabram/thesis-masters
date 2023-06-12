@@ -18,6 +18,8 @@ class DrawRecipientField():
         # Draw the data on the invoice
         self.draw_content()
 
+        return self.labels
+
     def select_entities(self):
         # TODO: Make this function random
         entities = ['R_Name', 'R_Street', 'R_HouseNumber', 'R_ZIP', 'R_City', 'R_Country', 'R_VAT']

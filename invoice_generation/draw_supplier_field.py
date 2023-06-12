@@ -16,6 +16,8 @@ class DrawSupplierField():
 
         # Draw the data on the invoice
         self.draw_content()
+
+        return self.labels
     
     def get_textwidth(self, text):
         '''
@@ -47,15 +49,15 @@ class DrawSupplierField():
             if entity == 'S_Street':
                 self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
                 width = self.get_textwidth(self.data[entity])
-                self.labels.append(text_label(self.draw, (x + width + 30, y), self.data['R_HouseNumber'], self.font, 'lm', 'R_HouseNumber'))
+                self.labels.append(text_label(self.draw, (x + width + 30, y), self.data['S_HouseNumber'], self.font, 'lm', 'S_HouseNumber'))
             elif entity == 'S_ZIP':
                 self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
                 width = self.get_textwidth(self.data[entity])
-                self.labels.append(text_label(self.draw, (x + width + 30, y), self.data['R_City'], self.font, 'lm', 'R_City'))
+                self.labels.append(text_label(self.draw, (x + width + 30, y), self.data['S_City'], self.font, 'lm', 'S_City'))
             elif entity in ['S_HouseNumber', 'S_City']:
                 continue
             elif entity == 'S_VAT':
-                self.labels.append(text_label(self.draw, (x, y), 'Tax ID: \t', self.font, 'lm', 'Other'))
+                self.labels.append(text_label(self.draw, (x, y), 'Tax ID:', self.font, 'lm', 'Other'))
                 width = self.get_textwidth('Tax ID: \t')
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
 
@@ -72,11 +74,11 @@ class DrawSupplierField():
             if entity == 'S_Bank':
                 self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
             elif entity == 'S_BIC':
-                self.labels.append(text_label(self.draw, (x, y), 'Swift: \t', self.font, 'lm', 'Other'))
+                self.labels.append(text_label(self.draw, (x, y), 'Swift:', self.font, 'lm', 'Other'))
                 width = self.get_textwidth('Swift: \t ')
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
             elif entity == 'S_IBAN':
-                self.labels.append(text_label(self.draw, (x, y), 'IBAN: \t', self.font, 'lm', 'Other'))
+                self.labels.append(text_label(self.draw, (x, y), 'IBAN:', self.font, 'lm', 'Other'))
                 width = self.get_textwidth('IBAN: \t')
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
             y += self.increment
@@ -84,7 +86,7 @@ class DrawSupplierField():
         return y
     
 
-class DrawInformationField():
+class DrawDateField():
     def __init__(self) -> None:
         pass
 
@@ -101,9 +103,11 @@ class DrawInformationField():
         # Draw the data on the invoice
         self.draw_content()
 
+        return self.labels
+
     def draw_content(self):
         '''
-        The information field has two subfields: date field, contact field.
+        The date field has two subfields: date field, contact field.
         This function manages to print them
         '''
         x, y, x2, y2 = self.bbox
@@ -133,7 +137,7 @@ class DrawInformationField():
                 self.labels.append(text_label(self.draw, (x, y), 'Period:', self.font, 'lm', 'Other'))
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', 'Other'))
                 width_date = self.get_textwidth(self.data[entity] + '  ')
-                self.labels.append(text_label(self.draw, (x+width+width_date, y), ' - ', self.font, 'lm', 'Other'))
+                self.labels.append(text_label(self.draw, (x+width+width_date, y), '-', self.font, 'lm', 'Other'))
                 width_ = self.get_textwidth(' - ')
                 self.labels.append(text_label(self.draw, (x+width+width_date+width_, y), self.data['End_Date'], self.font, 'lm', 'Other'))
             elif entity == 'I_Date':

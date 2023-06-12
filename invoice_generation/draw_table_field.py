@@ -16,7 +16,7 @@ class LayoutManager():
             'D_field': [900, 700, 1538, 950],   # Date (and contact)
             'L_field': [1200, 30, 1538, 200],   # Logo
             'T_field': [100, 1100, 1538, 1800], # Table
-            'I_field': [100, 2000, 1538, 2200], # Information
+            'I_field': [100, 2050, 1538, 2250], # Information
             'Q_field': [350, 850, 700, 1000],   # QR code
             'X_field': [100, 1850, 1538, 2000]  # Text field
         }
