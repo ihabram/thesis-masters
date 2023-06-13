@@ -26,6 +26,21 @@ class DrawBarcodeField():
 
             barcode = barcode.resize((new_width, new_height))
 
+        # Height of the bounding box
+        height_bbox = bbox[3] - bbox[1]
+
+        # Width of the barcode
+        width_barcode, height_barcode = barcode.size
+
+        # Calculate the resizing ratio, if the barcode is bigger than the bounding box
+        if height_barcode > height_bbox:
+            ratio = height_bbox / height_barcode
+
+            new_width = int(width_barcode*ratio)
+            new_height= int(height_barcode*ratio)
+
+            barcode = barcode.resize((new_width, new_height))
+
 
         # Print the barcode on the invoice
         invoice.paste(barcode, (bbox[0], bbox[1]))
@@ -36,10 +51,10 @@ class DrawLogoField():
         pass
 
     def __call__(self, invoice, bbox):
-        # Get a random barcode
+        # Get a random logo
         logo_dir = r'C:\Users\Habram\Documents\Datasets\Company_logos/'
-        logo_name = '0' #str(random.randint(0, 99))
-        logo = Image.open(logo_dir + logo_name + '.png')
+        logo_name = str(random.randint(0, 199))
+        logo = Image.open(logo_dir + logo_name + '.jpg')
 
         # Width of the bounding box
         width_bbox = bbox[2] - bbox[0]

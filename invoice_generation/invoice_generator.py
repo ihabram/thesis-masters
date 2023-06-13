@@ -6,13 +6,35 @@ from draw_supplier_field import DrawSupplierField, DrawDateField
 from draw_graphicals import DrawBarcodeField, DrawLogoField
 from draw_information_field import DrawInformationField, DrawTextField
 import json
+import random
 
 class InvoiceGenerator():
-    def __init__(self, num_documents = 1, det = True) -> None:
+    def __init__(self, num_documents = 1) -> None:
         self.output_dir = r'C:\Users\Habram\Documents\Datasets\fake-invoices'
-        self.font = ImageFont.truetype("arial.ttf", 30)
         self.num_documents = num_documents
-        self.det = det
+
+        # Initialize the drawers + layout manager
+        self.layout_manager      = LayoutManager()
+        self.table_drawer        = Draw_Table()
+        self.recipient_drawer    = DrawRecipientField()
+        self.supplier_drawer     = DrawSupplierField()
+        self.barcode_drawer      = DrawBarcodeField()
+        self.logo_drawer         = DrawLogoField()
+        self.date_drawer         = DrawDateField()
+        self.info_drawer         = DrawInformationField()
+        self.text_drawer         = DrawTextField()
+
+        # Which drawer has to be called for which field
+        self.layout2drawer = {
+            'R_field': self.recipient_drawer,
+            'S_field': self.supplier_drawer,
+            'D_field': self.date_drawer,
+            'L_field': self.logo_drawer,
+            'T_field': self.table_drawer,
+            'I_field': self.info_drawer,
+            'Q_field': self.barcode_drawer,
+            'X_field': self.text_drawer
+        }
 
     def get_canvas(self):
         # Open the blank, empty invoice image
@@ -20,49 +42,38 @@ class InvoiceGenerator():
         blank = Image.open(blank_dir)
 
         return blank
+    
+    def get_font(self):
+        styles = ['arial.ttf', 'times.ttf', 'calibri.ttf', 'verdana.ttf']
+        style = random.choice(styles)
+
+        return ImageFont.truetype(style, random.randint(20, 30))
 
     def __call__(self):
-        # 1. Generate the layout
-        layout_manager = LayoutManager()
-        self.layout = layout_manager.get_layout()
-        # layout_manager.visualize_layout(self.layout, self.drawer, self.font, self.canvas)
-
-        # 2. Generate the fake data
+        # Generate the fake data
         fake_data_generator = FakeData()
-        fake_data = fake_data_generator(self.num_documents, self.det)
-
-        # 3. Initialize the drawers
-        table_drawer = Draw_Table()
-        recipient_drawer = DrawRecipientField()
-        supplier_drawer = DrawSupplierField()
-        barcode_drawer = DrawBarcodeField()
-        logo_drawer = DrawLogoField()
-        date_drawer = DrawDateField()
-        info_drawer = DrawInformationField()
-        text_drawer = DrawTextField()
+        fake_data = fake_data_generator(self.num_documents)
 
         # 4. Draw the fake data on the image
         for i, document in enumerate(fake_data):
+            # Start with an empty label list
             labels = []
+            # Get an empty canvas
             canvas = self.get_canvas()
             drawer = ImageDraw.Draw(canvas)
+            font = self.get_font()
 
-            # 4.1 Draw the table on the document
-            labels = table_drawer(labels, canvas, self.layout['T_field'], document['I_Currency'])
-            # 4.2 Draw the recipient field
-            labels = recipient_drawer(labels, drawer, self.font, self.layout['R_field'], fake_data[i])
-            # 4.3 Draw supplier field
-            labels = supplier_drawer(labels, drawer, self.font, self.layout['S_field'], fake_data[i])
-            # 4.4 Draw barcode field
-            barcode_drawer(canvas, self.layout['Q_field'])
-            # 4.5 Draw logo field
-            logo_drawer(canvas, self.layout['L_field'])
-            # 4.6 Draw date field
-            labels = date_drawer(labels, drawer, self.font, self.layout['D_field'], fake_data[i])
-            # 4.7 Draw information field
-            labels = info_drawer(labels, drawer, self.font, self.layout['I_field'], fake_data[i])
-            # 4.8 Draw text field
-            labels = text_drawer(labels, drawer, self.font, self.layout['X_field'], fake_data[i])
+            # Generate a layout
+            layout = self.layout_manager.get_layout()
+            # layout_manager.visualize_layout(self.layout, self.drawer, self.font, self.canvas)
+
+            for layout_field in layout:
+                if layout_field == 'L_field':
+                    self.layout2drawer[layout_field](canvas, layout[layout_field])
+                elif layout_field == 'Q_field':
+                    self.layout2drawer[layout_field](canvas, layout[layout_field])
+                else:
+                    labels = self.layout2drawer[layout_field](labels, drawer, font, layout[layout_field], fake_data[i])
 
             # 5. Save the labels
             with open(self.output_dir+'/Annotations/'+str(i)+'.json', 'w') as fp:

@@ -31,6 +31,18 @@ class DrawInformationField():
         width = bbox[2] - bbox[0]
         return width
     
+    def get_num_cols(self):
+        '''
+        If the bounding box is not wide enough, the number of columns should be limited
+        '''
+        width_bbox = self.bbox[2] - self.bbox[0]
+        width_col = self.get_textwidth('IBAN: DE68108345214389224539')
+
+        max_num = int(width_bbox / width_col)
+        if max_num > 4: max_num = 4
+
+        return random.randint(1, max_num)
+    
     def draw_content(self):
         '''
         Information field has 4 sub-fields: 
@@ -41,7 +53,7 @@ class DrawInformationField():
         '''
         # Select random sub-fields
         fields = ['Address_field', 'Contact_field', 'Bank_field', 'Personal_field']
-        num_fields = random.randint(1, 4)
+        num_fields = self.get_num_cols()
         fields = random.sample(fields, num_fields)
 
         x1, y1, x2, y2 = self.bbox

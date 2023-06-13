@@ -10,7 +10,10 @@ class LayoutManager():
         pass
 
     def get_layout(self):
-        layout = {
+        layouts = []
+
+        # Agder
+        layouts.append({
             'R_field': [100, 350, 600, 800],    # Recipient
             'S_field': [900, 250, 1538, 650],   # Supplier
             'D_field': [900, 700, 1538, 950],   # Date (and contact)
@@ -19,9 +22,57 @@ class LayoutManager():
             'I_field': [100, 2100, 1538, 2250], # Information
             'Q_field': [350, 700, 700, 1000],   # QR code
             'X_field': [100, 1800, 1538, 2000]  # Text field
-        }
+        })
 
-        return layout
+        # 50 Hertz
+        layouts.append({
+            'R_field': [190, 360, 500, 620],    # Recipient
+            'S_field': [970, 335, 1530, 1033],  # Supplier
+            'D_field': [970, 1217, 1530, 1670], # Date (and contact)
+            'L_field': [790, 57, 1238, 220],    # Logo
+            'T_field': [70, 1410, 861, 1953],   # Table
+            'I_field': [50, 2000, 1588, 2250],  # Information
+            'Q_field': [637, 737, 869, 929],    # QR code
+            'X_field': [121, 1045, 821, 1321]   # Text field
+        })
+
+        # Cursor
+        layouts.append({
+            'R_field': [153, 341, 617, 609],    # Recipient
+            'S_field': [1065, 341, 1465, 817],  # Supplier
+            'D_field': [165, 773, 621, 1133], # Date (and contact)
+            'L_field': [1089, 65, 1461, 273],    # Logo
+            'T_field': [137, 1209, 1577, 2009],   # Table
+            'I_field': [97, 2113, 1517, 2277],  # Information
+            'Q_field': [693, 501, 969, 729],    # QR code
+            'X_field': [785, 897, 1465, 1121]   # Text field
+        })
+
+        # Fiorentini
+        layouts.append({
+            'R_field': [181, 429, 777, 805],    # Recipient
+            'S_field': [941, 261, 1465, 669],  # Supplier
+            'D_field': [953, 693, 1501, 945], # Date (and contact)
+            'L_field': [45, 65, 193, 213],    # Logo
+            'T_field': [181, 1241, 1557, 2197],   # Table
+            'I_field': [269, 45, 1105, 205],  # Information
+            'Q_field': [1073, 1005, 1449, 1142],    # QR code
+            'X_field': [205, 957, 709, 1125]   # Text field
+        })
+
+        # XING
+        layouts.append({
+            'R_field': [133, 301, 637, 653],    # Recipient
+            'S_field': [521, 1473, 1165, 1821],  # Supplier
+            'D_field': [1057, 389, 1529, 661], # Date (and contact)
+            'L_field': [1085, 53, 1493, 317],    # Logo
+            'T_field': [125, 781, 1481, 1193],   # Table
+            'I_field': [81, 1969, 1581, 2181],  # Information
+            'Q_field': [537, 45, 821, 213],    # QR code
+            'X_field': [125, 1305, 1353, 1449]   # Text field
+        })
+
+        return random.choice(layouts)
     
     def visualize_layout(self, layout, drawer, font, canvas):
         for key in layout:
@@ -66,25 +117,83 @@ class Draw_Table():
             'Carpet',
             'Washing machine',
             'Kitchen sink',
-            'Garbage can'
+            'Garbage can',
+            'General service',
+            'Cleaning',
+            'Server fee',
+            'Insurance',
+            'Furniture',
+            'Security cost',
+            'Power bank',
+            'Data transfer',
+            'Isolation',
+            'Advertising',
+            'Cooling',
+            'Party organization',
+            'Premium cost',
+            'Deposit',
+            'Dressing cost',
+            'Registration fee'
         ]
 
-    def __call__(self, labels, draw, bbox, currency):
-        self.draw = ImageDraw.Draw(draw)
+    def __call__(self, labels, draw, font, bbox, data):
+        self.draw = draw
         self.bbox = bbox                            # Bounding box of the table [x1, y1, x2, y2]
-        self.currency = currency                    # Currency to use in the table
-        self.font = ImageFont.truetype("arial.ttf", 30)
-        self.num_items = random.randint(3, 10)      # How many rows does the table have (number of items)
-        self.num_cols = random.randint(2, 5)        # How many columns does the table have
-        self.increment = 50                         # Height of a row in pixels
-        self.margin = 12                            # Distance between the table lines and text
+        self.currency = data['I_Currency']          # Currency to use in the table
+        self.font = font                            # Font of the document
+        self.increment = self.get_increment()       # Height of a row in pixels
+        self.num_items = self.get_num_rows()        # How many rows does the table have (number of items)
+        self.num_cols = self.get_num_cols()         # How many columns does the table have
+        self.margin = self.get_margin()             # Distance between the table lines and text
         self.labels = labels                        # Store the labels of the words
 
-        self.draw_horizontal_lines()
-        self.draw_vertical_lines()
+        if random.random() < 0.6:
+            self.draw_horizontal_lines()
+            if random.random() < 0.6:
+                self.draw_vertical_lines()
         self.draw_content()
 
         return self.labels
+    
+    def get_num_rows(self):
+        '''
+        The height of the table should be smaller than the height of the bounding box
+        '''
+        height_bbox = self.bbox[3] - self.bbox[1]
+        max_num = int(height_bbox / self.increment)
+
+        return random.randint(3, max_num)
+
+    def get_num_cols(self):
+        '''
+        The width of the table should be smaller than the width of the bounding box
+        '''
+        width_bbox = self.bbox[2] - self.bbox[0]
+        bbox = self.draw.textbbox((0, 0), 'Washing machine', font=self.font)
+        width_text = bbox[2] - bbox[0]
+        max_num = int(width_bbox / width_text)
+        if max_num > 5: max_num = 5
+
+        return random.randint(2, max_num)
+
+    def get_increment(self):
+        '''
+        The height of a row depends on the font size.
+        '''
+        bbox = self.draw.textbbox((0, 0), 'A', font=self.font)
+        height = bbox[3] - bbox[1]
+
+        return int(0.6*height + height)
+    
+    def get_margin(self):
+        '''
+        Get the distance between the text and the table grid
+        '''
+        bbox = self.draw.textbbox((0, 0), 'A', font=self.font)
+        height = bbox[3] - bbox[1]
+        
+        return int(0.4*height)
+
 
     def get_x_positions(self):
         '''
@@ -108,6 +217,7 @@ class Draw_Table():
             col_positions.append(pos)
             pos += col_width
         col_positions.append(pos)
+        col_positions[1] = int(col_positions[1] + col_positions[1]*0.15)   # Make the first column 15% wider
 
         return col_positions
 
@@ -155,7 +265,6 @@ class Draw_Table():
             self.labels.append(text_label(self.draw, (positions[col+2] - self.margin, self.bbox[1]), self.column_names[col+1], self.font, anchor='rm', label='Other', stroke=1))
 
         # Print the last column header (brutto) to the right
-        #self.draw.text((positions[-1] - self.margin, self.bbox[1]), self.column_names[-1], fill='black', font=self.font, anchor='rm', stroke_width=1)
         self.labels.append(text_label(self.draw, (positions[-1] - self.margin, self.bbox[1]), self.column_names[-1], self.font, anchor='rm', label='Other', stroke=1))
 
     def draw_content(self):
@@ -164,11 +273,10 @@ class Draw_Table():
         '''
         # Draw the header part
         self.draw_header()
-
         # Sample random fake data
         descriptions = random.sample(self.items, self.num_items-1)  # Random items from the predefined list
-        quantities = random.sample(range(1, 20), self.num_items-1)  # Random quantity between 1 and 20
-        taxes = random.sample(range(5, 20), self.num_items-1)       # Tax rate between 5 and 20
+        quantities = random.sample(range(1, 10+self.num_items), self.num_items-1)  # Random quantity between 1 and 20
+        taxes = random.sample(range(5, 10+self.num_items), self.num_items-1)       # Tax rate between 5 and 20
         nettos = random.sample(range(5000), self.num_items-1)       # Netto price
         bruttos = [round(a+a*b*0.01, 1) for a,b in zip(nettos,taxes)]   # Brutto price based on netto and tax (rounded to 2 decimals)
         
@@ -181,16 +289,16 @@ class Draw_Table():
         # Print the data into the table
         for row in range(self.num_items -1):
             # Print the description separately (aligned to the left)
-            self.labels.append(text_label(self.draw, (positions[0] + self.margin, self.bbox[1]+row*self.increment+self.increment+2*self.margin), str(data[0][row]), font=self.font, anchor='lm', label='Other'))
+            self.labels.append(text_label(self.draw, (positions[0] + self.margin, self.bbox[1]+row*self.increment+self.increment+self.increment/2), str(data[0][row]), font=self.font, anchor='lm', label='Other'))
             for col in range(self.num_cols -2):
-                self.labels.append(text_label(self.draw, (positions[col +2] - self.margin, self.bbox[1]+row*self.increment+self.increment+2*self.margin), str(data[col+1][row]), font=self.font, anchor='rm', label='Other'))
+                self.labels.append(text_label(self.draw, (positions[col +2] - self.margin, self.bbox[1]+row*self.increment+self.increment+self.increment/2), str(data[col+1][row]), font=self.font, anchor='rm', label='Other'))
             # Print the brutto separately (currency has different label)
             # Print the currency
-            self.labels.append(text_label(self.draw, (positions[-1] - self.margin, self.bbox[1]+row*self.increment+self.increment+2*self.margin), self.currency, font=self.font, anchor='rm', label='I_Currency'))
+            self.labels.append(text_label(self.draw, (positions[-1] - self.margin, self.bbox[1]+row*self.increment+self.increment+self.increment/2), self.currency, font=self.font, anchor='rm', label='I_Currency'))
             # Print the brutto amount (shift by the width of the currency)
             space_bbox = self.draw.textbbox((0, 0), ' ' + self.currency, font=self.font)
             space_width = space_bbox[2] - space_bbox[0]
-            self.labels.append(text_label(self.draw, (positions[-1] - self.margin - space_width, self.bbox[1]+row*self.increment+self.increment+2*self.margin), str(data[-1][row]), font=self.font, anchor='rm', label='Other'))
+            self.labels.append(text_label(self.draw, (positions[-1] - self.margin - space_width, self.bbox[1]+row*self.increment+self.increment+self.increment/2), str(data[-1][row]), font=self.font, anchor='rm', label='Other'))
 
         # Print the sum field
         summa = sum(bruttos)
@@ -199,12 +307,12 @@ class Draw_Table():
 
     def draw_sum_field(self, summa):
         # Print the currency
-        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin, self.bbox[1] + self.increment*self.num_items + self.margin*2), self.currency, self.font, 'rm', 'I_Currency'))
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin, self.bbox[1] + self.increment*self.num_items + self.margin*4), self.currency, self.font, 'rm', 'I_Currency'))
         # Print the sum amount
         space_bbox = self.draw.textbbox((0, 0), ' ' + self.currency, font=self.font)
         space_width = space_bbox[2] - space_bbox[0]
-        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*2), summa, self.font, 'rm', 'I_Amount'))
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*4), summa, self.font, 'rm', 'I_Amount'))
         # Print the 'Sum' word
         space_bbox = self.draw.textbbox((0, 0), '  '+self.currency+summa, font=self.font)
         space_width = space_bbox[2] - space_bbox[0]
-        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*2), 'Sum:', self.font, 'rm', 'Other', stroke=1))
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*4), 'Sum:', self.font, 'rm', 'Other', stroke=1))

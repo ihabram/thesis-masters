@@ -186,22 +186,15 @@ class FakeData():
 
         return dd + '.' + mm + '.' + yyyy
 
-    def __call__(self, num_invoices, det):
-        if det is True:
-            seeds = list(range(4320, 4320 + num_invoices))
-        
+    def __call__(self, num_invoices):
         # Every list element is a dictionary for a document
         fake_data = []
-        for i in range(num_invoices):
+        for _ in range(num_invoices):
             fake_doc = dict()
 
-            if det is True:
-                random.seed(seeds[i])
             l = random.choices(self.locations, self.weights, k=1)
             
             fake = Faker(l[0])
-            if det is True:
-                Faker.seed(seeds[i])
 
             fake_doc['R_Name']      = fake.company() 
             fake_doc['R_Street']    = fake.street_name()
