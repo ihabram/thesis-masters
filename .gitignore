@@ -1,8 +1,9 @@
 # Folders #
 ###################
-/LayoutLMv3/FUNSD/test/
-/LayoutLMv3/CORD/test/
-/LayoutLMv3/Custom/test/
+#/LayoutLMv3/FUNSD/test/
+#/LayoutLMv3/CORD/test/
+#/LayoutLMv3/Custom/test/
+test/
 
 # Compiled source #
 ###################
