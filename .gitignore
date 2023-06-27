@@ -4,8 +4,7 @@
 #/LayoutLMv3/CORD/test/
 #/LayoutLMv3/Custom/test/
 test/
-**/__pycache__/
-**/.idea/
+__pycache__/
 
 # Compiled source #
 ###################
