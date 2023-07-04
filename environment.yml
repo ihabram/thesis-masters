@@ -1,0 +1,12 @@
+name: IstvanThesisEnvironment
+
+dependencies:
+  - python=3.8
+  - pip
+  - numpy
+  - matplotlib
+  - pip:
+    - datasets
+    - transformers
+    - seqeval
+    - torch
