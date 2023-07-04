@@ -67,7 +67,7 @@ class IstVoices(datasets.GeneratorBasedBuilder):
                     "bboxes": datasets.Sequence(datasets.Sequence(datasets.Value("int64"))),
                     "ner_tags": datasets.Sequence(
                         datasets.features.ClassLabel(
-                            names=['OTHER',
+                            names=['O',
                                    'B-R_NAME', 'I-R_NAME', 'B-R_STREET', 'I-R_STREET', 'B-R_HOUSENUMBER', 'I-R_HOUSENUMBER',
                                    'B-R_ZIP',  'I-R_ZIP',  'B-R_CITY',   'I-R_CITY',   'B-R_COUNTRY', 'I-R_COUNTRY', 'B-R_VAT', 'I-R_VAT',
                                    'B-S_NAME', 'I-S_NAME', 'B-S_STREET', 'I-S_STREET', 'B-S_HOUSENUMBER', 'I-S_HOUSENUMBER',
@@ -123,7 +123,7 @@ class IstVoices(datasets.GeneratorBasedBuilder):
                 if label == "Other":
                     for w in words:
                         tokens.append(w["text"])
-                        ner_tags.append("OTHER")
+                        ner_tags.append("O")
                         bboxes.append(normalize_bbox(item["box"], size))
                 else:
                     tokens.append(words[0]["text"])
