@@ -11,16 +11,18 @@ I: Invoice
 3 : R_HouseNumber
 4 : R_ZIP
 5 : R_City
+6 : R_Country
 
-6 : S_Name
-7 : S_Street
-8 : S_HouseNumber
-9 : S_ZIP
-10: S_City
+7 : S_Name
+8 : S_Street
+9 : S_HouseNumber
+10: S_ZIP
+11: S_City
+12: S_Country
 
-11: S_Bank
-12: S_IBAN
+13: S_Bank
+14: S_IBAN
 
-13: I_Number
-14: I_Date
-15: I_Amount
+15: I_Number
+16: I_Date
+17: I_Amount
