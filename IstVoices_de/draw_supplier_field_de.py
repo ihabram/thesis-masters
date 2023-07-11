@@ -59,7 +59,7 @@ class DrawSupplierField():
             elif entity == 'S_VAT':
                 self.labels.append(text_label(self.draw, (x, y), 'USt.-ID Nr.:', self.font, 'lm', 'Other'))
                 width = self.get_textwidth('USt.-ID Nr.: \t')
-                self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
+                self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', 'Other'))
             elif entity == 'S_Country':
                 country = {
                     'Germany': 'Deutschland',
