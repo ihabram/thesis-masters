@@ -5,14 +5,6 @@ This script turns the raw files into a dataset can be used universally.
 import os
 import json
 import datasets
-from PIL import Image
-
-
-def load_image(image_path):
-    '''Loads and image, returns the image itself and the dimensions of it.'''
-    image = Image.open(image_path).convert("RGB")
-    w, h = image.size
-    return image, (w, h)
 
 _CITATION = '''
             @unpublished{Habram2023,
@@ -55,10 +47,15 @@ class IstVoices(datasets.GeneratorBasedBuilder):
                     "tokens": datasets.Sequence(datasets.Value("string")),
                     "ner_tags": datasets.Sequence(
                         datasets.features.ClassLabel(
-                            names=['R_Name', 'R_Street', 'R_HouseNumber', 'R_ZIP', 'R_City', 'R_Country', 'R_VAT',
-                                   'S_Name', 'S_Street', 'S_HouseNumber', 'S_ZIP', 'S_City', 'S_Country', 'S_VAT',
-                                   'S_Bank', 'S_BIC', 'S_IBAN', 'S_Tel', 'S_Email', 
-                                   'I_Number', 'I_Date', 'I_DueDate', 'I_Amount', 'I_Currency', 'Other']
+                            names=['O',
+                                   'B-R_NAME', 'I-R_NAME', 'B-R_STREET', 'I-R_STREET', 'B-R_HOUSENUMBER', 'I-R_HOUSENUMBER',
+                                   'B-R_ZIP',  'I-R_ZIP',  'B-R_CITY',   'I-R_CITY',   'B-R_COUNTRY', 'I-R_COUNTRY', 'B-R_VAT', 'I-R_VAT',
+                                   'B-S_NAME', 'I-S_NAME', 'B-S_STREET', 'I-S_STREET', 'B-S_HOUSENUMBER', 'I-S_HOUSENUMBER',
+                                   'B-S_ZIP',  'I-S_ZIP',  'B-S_CITY',   'I-S_CITY',   'B-S_COUNTRY', 'I-S_COUNTRY', 'B-S_VAT', 'I-S_VAT',          
+                                   'B-S_BANK', 'I-S_BANK',  'B-S_BIC', 'I-S_BIC', 'B-S_IBAN', 'I-S_IBAN', 'B-S_TEL', 'I-S_TEL', 
+                                   'B-S_EMAIL', 'I-S_EMAIL', 'B-I_NUMBER', 'I-I_NUMBER', 'B-I_DATE', 'I-I_DATE', 'B-I_DUEDATE',  'I-I_DUEDATE',
+                                   'B-I_AMOUNT', 'I-I_AMOUNT', 'B-I_CURRENCY', 'I-I_CURRENCY'
+                                ]
                         )
                     )
                 }
@@ -70,13 +67,13 @@ class IstVoices(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         ''' Splits the dataset into TRAIN and TEST subsets '''
-        downloaded_file = r'C:\Users\Habram\Documents\Datasets\IstVoices_text'
+        downloaded_file = r'C:\Users\Habram\Documents\Datasets\IstVoices'
         return [
             datasets.SplitGenerator(
-                name=datasets.Split.TRAIN, gen_kwargs={"filepath": f"{downloaded_file}/training_data/"}
+                name=datasets.Split.TRAIN, gen_kwargs={"filepath": f"{downloaded_file}/training_data/annotations/"}
             ),
             datasets.SplitGenerator(
-                name=datasets.Split.TEST, gen_kwargs={"filepath": f"{downloaded_file}/testing_data/"}
+                name=datasets.Split.TEST, gen_kwargs={"filepath": f"{downloaded_file}/testing_data/annotations/"}
             ),
         ]
 
@@ -92,6 +89,20 @@ class IstVoices(datasets.GeneratorBasedBuilder):
             with open(file_path, "r", encoding="utf8") as f:
                 data = json.load(f)
 
-            tokens, ner_tags = data["tokens"], data["ner_tags"]
+            for item in data:
+              words, label = item["words"], item["label"]
+              words = [w for w in words if w["text"].strip() != ""]
+              if len(words) == 0:
+                  continue
+              if label == "Other":
+                  for w in words:
+                      tokens.append(w["text"])
+                      ner_tags.append("O")
+              else:
+                  tokens.append(words[0]["text"])
+                  ner_tags.append("B-" + label.upper())
+                  for w in words[1:]:
+                      tokens.append(w["text"])
+                      ner_tags.append("I-" + label.upper())
 
             yield guid, {"tokens": tokens, "ner_tags": ner_tags}

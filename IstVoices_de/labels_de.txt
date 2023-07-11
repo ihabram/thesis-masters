@@ -1,0 +1,26 @@
+List of entities which are used in the IstVoices_de synthetic dataset.
+
+R: Recipient
+S: Supplier
+I: Invoice
+
+0 : Other
+
+1 : R_Name
+2 : R_Street
+3 : R_HouseNumber
+4 : R_ZIP
+5 : R_City
+
+6 : S_Name
+7 : S_Street
+8 : S_HouseNumber
+9 : S_ZIP
+10: S_City
+
+11: S_Bank
+12: S_IBAN
+
+13: I_Number
+14: I_Date
+15: I_Amount
