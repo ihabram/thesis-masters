@@ -1,4 +1,5 @@
 from annotator_de import text_label
+import random
 
 class DrawSupplierField():
     def __init__(self) -> None:
@@ -138,7 +139,7 @@ class DrawDateField():
         
         for entity in entities:
             if entity == 'I_Number':
-                self.labels.append(text_label(self.draw, (x, y), 'Belegnummer:', self.font, 'lm', 'Other'))
+                self.labels.append(text_label(self.draw, (x, y), 'Rechnung Nr.', self.font, 'lm', 'Other'))
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
             elif entity == 'Start_Date':
                 self.labels.append(text_label(self.draw, (x, y), 'Zeitraum:', self.font, 'lm', 'Other'))
@@ -148,7 +149,8 @@ class DrawDateField():
                 width_ = self.get_textwidth(' - ')
                 self.labels.append(text_label(self.draw, (x+width+width_date+width_, y), self.data['End_Date'], self.font, 'lm', 'Other'))
             elif entity == 'I_Date':
-                self.labels.append(text_label(self.draw, (x, y), 'Rechnungsdatum:', self.font, 'lm', 'I_Date'))
+                possibe_words = ['Rechnungsdatum:', 'Datum:']
+                self.labels.append(text_label(self.draw, (x, y), random.choice(possibe_words), self.font, 'lm', 'I_Date'))
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
             y += self.increment
 

@@ -1,4 +1,5 @@
 from annotator_de import text_label
+import random
 
 class DrawRecipientField():
     def __init__(self) -> None:
@@ -16,6 +17,7 @@ class DrawRecipientField():
 
         # Draw the data on the invoice
         self.draw_content()
+        self.draw_supplierA_field()
 
         return self.labels
     
@@ -60,4 +62,29 @@ class DrawRecipientField():
                 self.labels.append(text_label(self.draw, (x, y), 'USt.-ID Nr.:', self.font, 'lm', 'Other'))
                 width = self.get_textwidth('USt.-ID Nr.: \t')
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', 'Other'))
-            
+
+    def draw_supplierA_field(self):
+        ''' Draws the supplier field on top of the recipient field'''
+        entities = ['S_Name', 'S_Street', 'S_HouseNumber', 'S_ZIP', 'S_City']
+        x, y, x2, y2 = self.bbox
+        y -= 80
+
+        for entity in entities:
+            if entity == 'S_Name':
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
+                x += self.get_textwidth(self.data[entity] + ' ')
+                self.labels.append(text_label(self.draw, (x, y), ' | ', self.font, 'lm', 'Other'))
+                x += self.get_textwidth(' | ')
+            elif entity == 'S_Street':
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity] + '  ', self.font, 'lm', entity))
+                x += self.get_textwidth(self.data[entity] + '  ')
+            elif entity == 'S_HouseNumber':
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))
+                x += self.get_textwidth(self.data[entity] + ' ')
+                self.labels.append(text_label(self.draw, (x, y), ' | ', self.font, 'lm', 'Other'))
+                x += self.get_textwidth(' | ')
+            elif entity == 'S_ZIP':
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity] + '  ', self.font, 'lm', entity))
+                x += self.get_textwidth(self.data[entity] + '  ')
+            elif entity == 'S_City':
+                self.labels.append(text_label(self.draw, (x, y), self.data[entity], self.font, 'lm', entity))

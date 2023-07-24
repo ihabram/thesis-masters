@@ -14,10 +14,10 @@ class FakeData():
             "KfW Bank",
             "DZ Bank",
             "UniCredit Bank",
-            "Landesbank Baden-Württemberg",
+            "Sparkasse Köln",
             "Bayerische Landesbank",
-            "HypoVereinsbank",
-            "Norddeutsche Landesbank",
+            "Sparkasse München",
+            "Sparkasse Berlin",
             "Landesbank Hessen-Thüringen"
         ]
         banks_at = [
@@ -113,16 +113,26 @@ class FakeData():
             
             fake = Faker(l[0])
 
-            fake_doc['R_Name']       = fake.company() 
+            fake_doc['R_Name']       = fake.company()
+            company = fake_doc['R_Name'].split()
+            if company[-1] not in {'Inc', 'e.G.', 'LLC', 'GmbH', 'AG', 'KG', 'Ltd'}:
+                fake_doc['R_Name'] += ' GmbH'
             fake_doc['R_Street']     = fake.street_name()
             fake_doc['R_HouseNumber']= fake.building_number()
+            if random.random() < 0.6:
+                fake_doc['R_HouseNumber'] += random.choice(['a', 'b', 'c'])
             fake_doc['R_ZIP']        = fake.postcode()
             fake_doc['R_City']       = fake.city()
             fake_doc['R_Country']    = fake.current_country()
             fake_doc['R_VAT']        = fake.current_country_code() + str(fake.random_number(digits=9, fix_len=True))
             fake_doc['S_Name']       = fake.company()
+            company = fake_doc['S_Name'].split()
+            if company[-1] not in {'Inc', 'e.G.', 'LLC', 'GmbH', 'AG', 'KG', 'Ltd'}:
+                fake_doc['S_Name'] += ' GmbH'
             fake_doc['S_Street']     = fake.street_name()
             fake_doc['S_HouseNumber']= fake.building_number()
+            if random.random() < 0.4:
+                fake_doc['S_HouseNumber'] += random.choice(['a', 'b', 'c'])
             fake_doc['S_ZIP']        = fake.postcode()
             fake_doc['S_City']       = fake.city()
             fake_doc['S_Country']    = fake.current_country()

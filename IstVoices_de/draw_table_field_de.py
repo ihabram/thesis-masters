@@ -306,8 +306,9 @@ class Draw_Table():
         # Print the sum amount
         space_bbox = self.draw.textbbox((0, 0), ' ' + self.currency, font=self.font)
         space_width = space_bbox[2] - space_bbox[0]
-        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*4), summa, self.font, 'rm', 'I_Amount'))
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*4), summa, self.font, 'rm', 'I_Amount', stroke=1))
         # Print the 'Sum' word
         space_bbox = self.draw.textbbox((0, 0), '  '+self.currency+summa, font=self.font)
         space_width = space_bbox[2] - space_bbox[0]
-        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width, self.bbox[1] + self.increment*self.num_items + self.margin*4), 'Summe:', self.font, 'rm', 'Other', stroke=1))
+        possible_words = ['Gesamtbetrag:', 'Summe Brutto', 'Endbetrag', 'Rechnungsbetrag:', 'Summe:', 'Bruttobetrag', 'Brutto']
+        self.labels.append(text_label(self.draw, (self.bbox[2] - self.margin - space_width*2, self.bbox[1] + self.increment*self.num_items + self.margin*4), random.choice(possible_words), self.font, 'rm', 'Other', stroke=1))
