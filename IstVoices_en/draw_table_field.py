@@ -78,7 +78,7 @@ class LayoutManager():
         for key in layout:
             drawer.rectangle(layout[key], outline='black')
             drawer.text(layout[key], key, font=font, fill='black')
-        canvas.show()
+        return canvas
 
 class Draw_Table():
     '''
