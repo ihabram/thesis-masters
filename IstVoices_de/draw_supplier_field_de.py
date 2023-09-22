@@ -150,7 +150,7 @@ class DrawDateField():
                 self.labels.append(text_label(self.draw, (x+width+width_date+width_, y), self.data['End_Date'], self.font, 'lm', 'Other'))
             elif entity == 'I_Date':
                 possibe_words = ['Rechnungsdatum:', 'Datum:']
-                self.labels.append(text_label(self.draw, (x, y), random.choice(possibe_words), self.font, 'lm', 'I_Date'))
+                self.labels.append(text_label(self.draw, (x, y), random.choice(possibe_words), self.font, 'lm', 'Other'))
                 self.labels.append(text_label(self.draw, (x+width, y), self.data[entity], self.font, 'lm', entity))
             y += self.increment
 
